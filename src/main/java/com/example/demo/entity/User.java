@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.*;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -21,4 +21,11 @@ public class User extends BaseEnity {
 
     @Column(nullable = false, length = 120)
     private String name;
+
+    //orphanRemoval = true --> Remove Parent and Child
+    @OneToOne(mappedBy = "user", orphanRemoval = true)
+    private Social social;
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Address> addresses;
 }
