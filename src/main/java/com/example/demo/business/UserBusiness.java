@@ -9,9 +9,6 @@ import com.example.demo.model.MRegisterResponse;
 import com.example.demo.service.TokenService;
 import com.example.demo.service.UserService;
 import com.example.demo.util.SecurityUtil;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -49,14 +46,14 @@ public class UserBusiness {
 
     public String refreshToken() throws BaseException {
         Optional<String> opt = SecurityUtil.getCurrentUserId();
-        if(opt.isEmpty()){
+        if (opt.isEmpty()) {
             throw UserException.unauthorized();
         }
 
         String userId = opt.get();
 
         Optional<User> optUser = userService.findById(userId);
-        if(optUser.isEmpty()){
+        if (optUser.isEmpty()) {
             throw UserException.notFound();
         }
 

@@ -3,6 +3,17 @@
 # ===============================
 # Set here configurations for the database connection
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: phetchpirat
+    password: bqvxssqhjwhvtwxy
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   jpa:
     hibernate:
       ddl-auto: update
@@ -11,8 +22,9 @@ spring:
     username: postgres
     password: syspass
 
-
 app:
   token:
     secret: m#MySesecret2021
     issuer: BackendService
+  email:
+    from: phetchpirat@gmail.com
