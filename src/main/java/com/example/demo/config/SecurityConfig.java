@@ -12,7 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
+
+import java.util.Collections;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -23,8 +24,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/actuator/**",
             "/user/register",
             "/user/login",
-            "/socket/**",
-            "/chat/**"
+            "/user/activate",
+            "/user/resend-activation-email",
+            "/socket/**"
     };
 
     public SecurityConfig(TokenService tokenService) {
@@ -43,26 +45,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().disable().csrf().disable()
+        http.cors(config -> {
+
+            CorsConfiguration cors = new CorsConfiguration();
+            cors.setAllowCredentials(true);
+            cors.setAllowedOriginPatterns(Collections.singletonList("http://*"));
+            cors.addAllowedHeader("*");
+            cors.addAllowedMethod("OPTIONS");
+            cors.addAllowedMethod("POST");
+            cors.addAllowedMethod("GET");
+            cors.addAllowedMethod("PUT");
+            cors.addAllowedMethod("DELETE");
+
+            UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+            source.registerCorsConfiguration("/**", cors);
+
+            config.configurationSource(source);
+        }).csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeRequests().antMatchers(PUBLIC).anonymous()
+                .antMatchers("/product/{id}").hasAnyAuthority("user")
                 .anyRequest().authenticated()
                 .and().apply(new TokenFilterConfigurer(tokenService));
     }
 
-    @Bean
-    public CorsFilter corsFilter(){
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:4200");
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("OPTIONS");
-        config.addAllowedMethod("POST");
-        config.addAllowedMethod("GET");
-        config.addAllowedMethod("PUT");
-        config.addAllowedMethod("DELETE");
-        source.registerCorsConfiguration("/**",config);
-        return new CorsFilter(source);
-    }
+
+
 }

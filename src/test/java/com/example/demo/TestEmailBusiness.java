@@ -16,7 +16,6 @@ class TestEmailBusiness {
     @Autowired
     private EmailBussiness emailBussiness;
 
-
     @Order(1)
     @Test
     void testSendActivateEmail() throws BaseException {

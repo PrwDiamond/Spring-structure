@@ -8,7 +8,6 @@ import com.example.demo.util.SecurityUtil;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -25,7 +24,7 @@ public class ChatBusiness {
 
         Optional<String> opt = SecurityUtil.getCurrentUserId();
 
-        if(opt.isEmpty()){
+        if (opt.isEmpty()) {
             throw ChatException.accessDenied();
         }
 

@@ -34,12 +34,12 @@ public class TokenService {
     public String tokenize(User user) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MINUTE, 60);
-        Date expiresAt = calendar.getTime();
+        Date expiresAt = calendar.getTime( );
 
         return JWT.create()
                 .withIssuer(issuer)
                 .withClaim("principle", user.getId())
-                .withClaim("role", "User")
+                .withClaim("role", "user")
                 .withExpiresAt(expiresAt)
                 .sign(algorithm());
     }
